@@ -1,0 +1,143 @@
+<html lang="pt-BR"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/default">
+	<head>
+		<title th:text="'Servico número ' + ${work.id}">Serviço</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="header">
+						<div class="row">
+							<div class="col-md-6">
+								<h3 class="title" th:text="'Serviço número ' + ${work.id}"></h3>
+							</div>
+							<div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ATTENDANT')" class="col-md-2 col-md-offset-4">
+								<button type="button" class="btn btn-primary" style="margin-bottom: 15px; width: 100%;" disabled="disabled">
+									Retirar
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="card">
+					<div class="header">
+						<h4 class="title">Detalhes</h4>
+					</div>
+					<div class="content">
+						<div class="form-horizontal">
+	  						<div class="form-group">
+	  							<label class="col-md-4">Cliente:</label>
+	  							<a th:href="@{/clientes/} + ${work.client.id}"
+	  								th:text="${work.client.name}"></a>
+	  						</div>
+	  						<div class="form-group">
+	  							<label class="col-md-4">Atendente:</label>
+	  							<a th:href="@{/atendentes/} + ${work.attendant.id}"
+	  								th:text="${work.attendant.name}"></a>
+	  						</div>
+	  						<div class="form-group">
+	  							<label class="col-md-4">Requisitado Em:</label>
+	  							<span th:attr="data-date-format=${work.requestedAt}" class="datetime-format"></span>
+	  						</div>
+	  						<div class="form-group">
+	  							<label class="col-md-4">Retirado Em:</label>
+	  							<span th:text="${work.retiredAt}"></span>
+	  						</div>
+	  						<div class="form-group">
+	  							<label class="col-md-4">Valor Total:</label>
+	  							<span th:attr="data-money-format=${work.sumItems}" class="money-format"></span>
+	  						</div>
+	  					</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="header">
+						<h4 class="title">Pagamentos</h4>
+					</div>
+					<div class="content">
+						<div th:each="payment : ${work.payments}" class="row">
+							<button sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ATTENDANT')" th:if="!${payment.paidIn}"
+								th:attr="data-payment-id=${payment.id}" type="button" class="btn btn-primary pull-right receive-payment"
+								style="margin-right: 15px;">Receber</button>
+							<div class="form-group">
+			  					<label class="col-md-4">ID:</label>
+			  					<span th:text="${payment.id}"></span>
+			  				</div>
+			  				<div class="form-group">
+			  					<label class="col-md-4">Pago em:</label>
+			  					<span th:attr="data-date-format=${payment.paidIn}" class="datetime-format"></span>
+			  				</div>
+			  				<div class="form-group">
+			  					<label class="col-md-4">Valor:</label>
+			  					<span th:attr="data-money-format=${payment.value}" class="money-format"></span>
+			  				</div>
+			  				<div class="form-group">
+			  					<label class="col-md-4">Estado:</label>
+			  					<span th:text="${payment.status.description}"></span>
+			  				</div>
+			  				<hr class="col-md-8 col-md-offset-2" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="card">
+					<div class="header">
+						<h4 class="title">Itens</h4>
+					</div>
+					<div class="content">
+  						<div th:each="item : ${work.items}" class="row">
+	  						<div class="col-md-8">
+		  						<div class="form-group">
+			  						<label class="col-md-5">ID:</label>
+			  						<span th:text="${item.id}"></span>
+			  					</div>
+			  					<div class="form-group">
+			  						<label class="col-md-5">Nome:</label>
+			  						<span th:text="${item.name}"></span>
+			  					</div>
+			  					<div class="form-group">
+			  						<label class="col-md-5">Quantidade:</label>
+			  						<span th:text="${item.quantity}"></span>
+			  					</div>
+			  					<div class="form-group">
+			  						<label class="col-md-5">Preço:</label>
+			  						<span th:attr="data-money-format=${item.price}" class="money-format"></span>
+			 					</div>
+			 					<div class="form-group">
+			  						<label class="col-md-5">Preço Total:</label>
+			  						<span th:attr="data-money-format=${item.totalPrice}" class="money-format"></span>
+			 					</div>
+			  					<div class="form-group"
+			  						th:if="${item.description} != ''">
+			  						<label class="col-md-5">Descrição:</label>
+									<span th:text="${item.description}"></span>
+			  					</div>
+			  					<div class="form-group">
+			  						<label class="col-md-5">Estado:</label>
+			  							<span th:text="${item.status.description}"></span>
+			  							<span th:if="${item.statusReason}" th:text="'(' + ${item.statusReason} + ')'"></span>
+			  					</div>
+		  					</div>
+		  					<div class="col-md-4">
+		  						<div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ATTENDANT')"
+		  							layout:include="work/item/analysis-cancel"></div>
+		  						<div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_DESIGN')"
+		  							layout:include="work/item/approve-reject"></div>
+		  						<div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')"
+		  							layout:include="work/item/production-avaliable"></div>
+		  					</div>
+		  					<hr class="col-md-8 col-md-offset-2" />
+  						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

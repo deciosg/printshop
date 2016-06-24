@@ -1,0 +1,12 @@
+<div>
+	<div th:if="${item.status == T(cc.printshop.model.StatusItem).IN_ANALYSIS}">
+		<button th:attr="data-work-id=${work.id}, data-item-id=${item.id}"
+			class="btn btn-primary pull-right btn-block item-approve">
+			<i class="fa fa-check" aria-hidden="true"></i> Aprovar
+		</button>
+		<button th:attr="data-work-id=${work.id}, data-item-id=${item.id}"
+			class="btn btn-danger pull-right btn-block item-reject">
+			<i class="fa fa-ban" aria-hidden="true"></i> Refugar
+		</button>
+	</div>
+</div>

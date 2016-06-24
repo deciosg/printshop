@@ -1,0 +1,191 @@
+<html lang="pt-BR"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/default">
+	<head>
+		<title>Adicionar</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="card">
+				<div class="content">
+					<form id="create" method="post" th:action="${#httpServletRequest.requestURL}" th:object="${employee}">
+						<div class="row">
+							<div class="form-group col-md-9">
+								<label>Nome:</label>
+								<input type="text" class="form-control" th:field="*{name}" />
+							</div>
+							<div class="form-group col-md-3">
+								<label>CPF:</label>
+								<input type="text" class="form-control cpf" th:field="*{cpf}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-2">
+								<label>CEP:</label>
+								<input type="text" class="form-control cep" th:field="*{address.postalCode}" />
+							</div>
+							<div class="form-group col-md-6">
+								<label>Logradouro:</label>
+								<input type="text" class="form-control" th:field="*{address.street}" />
+							</div>
+							<div class="form-group col-md-1">
+								<label>Numero:</label>
+								<input type="text" class="form-control" th:field="*{address.number}" />
+							</div>
+							<div class="form-group col-md-3">
+								<label>Complemento:</label>
+								<input type="text" class="form-control" th:field="*{address.complement}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label>Bairro:</label>
+								<input type="text" class="form-control" th:field="*{address.borough}" />
+							</div>
+							<div class="form-group col-md-5">
+								<label>Cidade:</label>
+								<input type="text" class="form-control" th:field="*{address.city}" />
+							</div>
+							<div class="form-group col-md-1">
+								<label>UF:</label>
+								<input type="text" class="form-control" th:field="*{address.state}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-4">
+								<label>Nome de usuario:</label>
+								<input type="text" class="form-control" th:field="*{username}" />
+							</div>
+							<div class="form-group col-md-4">
+								<label>Senha:</label>
+								<input type="password" class="form-control" th:field="*{password}" />
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary">Gravar</button>
+			        </form>
+				</div>
+			</div>
+			<div class="modal-loading"></div>
+		</div>
+		<div layout:fragment="scripts">
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$body = $("body");
+					$cpf = $("#cpf");
+					$landline = $("#landline\\.number");
+					$cellular = $("#cellular\\.number");
+					$postalCode = $("#address\\.postalCode");
+					$street = $("#address\\.street");
+					$borough = $("#address\\.borough");
+					$city = $("#address\\.city");
+					$state = $("#address\\.state");
+					$numberAddress = $("#address\\.number");
+					
+					$postalCode.mask("00000-000");
+					$cpf.mask("000.000.000-00");
+					$landline.mask("(00) 0000-0000");
+					$cellular.mask("(00) 90000-0000")
+					
+					function clean_form_postal_code() {
+						$street.val("");
+						$borough.val("");
+						$city.val("");
+						$state.val("");
+		            }
+					$postalCode.blur(function() {
+						var postalCode = $(this).val().replace(/\D/g, '');
+						if (postalCode != "") {
+							var validPostalCode = /^[0-9]{8}$/;
+							if(validPostalCode.test(postalCode)) {
+								$body.addClass("loading");
+								$.getJSON("//viacep.com.br/ws/"+ postalCode +"/json/?callback=?", function(content) {
+									if (!("erro" in content)) {
+										setTimeout(function() {
+											$street.val(content.logradouro);
+											$borough.val(content.bairro);
+											$city.val(content.localidade);
+											$state.val(content.uf);
+											$numberAddress.focus();
+											$body.removeClass("loading");
+										}, 1500);
+									} else {
+										setTimeout(function() {
+											$body.removeClass("loading");
+											clean_form_postal_code();
+											swal({
+												title: "CEP Não Encontrado!",
+												text: "Por favor insira o endereço manualmente.",
+												type: "error"
+											});
+										}, 1500);
+									}
+								});
+							}
+						}
+					});
+					
+					$("#create").validate({
+						rules: {
+							name: {
+								required: true,
+								minlength: 6,
+							},
+							cpf: {
+								required: true,
+								cpf: true
+							},
+							username: {
+								required: true
+							},
+							password: {
+								required: true
+							},
+							confirm_password: {
+								required: true,
+								equalTo: "#password"
+							},
+							"address.street": {
+								required: true
+							},
+							"address.borough": {
+								required: true
+							},
+							"address.city": {
+								required: true
+							},
+							"address.state": {
+								required: true
+							}
+						},
+						messages: {
+							name: {
+								required: "Por favor, insira um nome",
+								minlength: "O Nome deve conter no mínimo 6 caracteres"
+							},
+							cpf: {
+								required: "Por favor, insira um CPF",
+								cpf: "Por favor insira, um CPF válido"
+							},
+							password: {
+								required: "Por favor, insira uma senha",
+							},
+							"address.street": {
+								required: "Por favor, insira um logradouro"
+							},
+							"address.borough": {
+								required: "Por favor, insira um bairro"
+							},
+							"address.city": {
+								required: "Por favor, insira uma cidade"
+							},
+							"address.state": {
+								required: "UF"
+							}
+						}
+					});
+				});
+			</script>
+		</div>
+	</body>
+</html>

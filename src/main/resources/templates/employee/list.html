@@ -1,0 +1,59 @@
+<html lang="pt-BR"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/default">
+	<head>
+		<title th:text="${titleHeader}"></title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="card">
+				<div class="header">
+					<div class="col-md-6">
+						<h4 class="title" th:text="${titleHeader}">Users</h4>
+					</div>
+					<div class="col-md-2 col-md-offset-4">				
+						<a class="btn btn-primary btn-block" th:href="${#httpServletRequest.requestURL} + '/adicionar'">
+							<i class="fa fa-plus" aria-hidden="true"></i> Adicionar
+						</a>
+					</div>
+				</div>
+				<div class="content">
+					<table class="table">
+						<thead>
+							<th class="col-md-1 text-right">ID</th>
+							<th class="col-md-4">Nome</th>
+							<th class="col-md-2">Bairro</th>
+							<th class="col-md-2">Cidade</th>
+							<th class="col-md-1 text-center">UF</th>
+							<th class="col-md-2"></th>
+						</thead>
+						<tbody>
+							<tr th:each="employee : ${employees}">
+								<td th:text="${employee.id}" class="text-right"></td>
+								<td th:text="${employee.name}"></td>
+								<td th:text="${employee.address.borough}"></td>
+								<td th:text="${employee.address.city}"></td>
+								<td th:text="${employee.address.state}" class="text-center"></td>
+								<td class="text-center">
+									<a th:href="${#httpServletRequest.requestURL} + '/' + ${employee.id}"
+										class="btn btn-info btn-xs">
+										<i class="fa fa-eye" aria-hidden="true"></i>
+									</a>
+									<a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+										th:href="${#httpServletRequest.requestURL} + '/editar/' + ${employee.id}" class="btn btn-warning btn-xs">
+										<i class="fa fa-pencil" aria-hidden="true"></i>
+									</a>
+									<a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+										th:attr="data-user-id=${employee.id}" class="btn btn-danger btn-xs delete-user">
+										<i class="fa fa-trash" aria-hidden="true"></i>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,70 @@
+<html lang="pt-BR"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/default">
+	<head>
+		<title>Clientes</title>
+	</head>
+	<body>
+		<div layout:fragment="title">Clientes</div>
+		<div layout:fragment="content">
+			<div th:if="${error}" class="row" style="margin: 0 0 0 0;">
+				<div class="alert alert-danger alert-dismissible col-md-12" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<span th:text="${error}"></span>
+				</div>
+			</div>
+			<div class="card">
+				<div class="header">
+					<div class="col-md-3">
+						<form th:action="@{/clientes}" method="post">
+							<div class="input-group">
+								<input type="text" name="cpf" class="form-control" placeholder="Digite o CPF para a busca" data-mask="000.000.000-00" />
+								<span class="input-group-btn">
+									<button type="submit" class="btn btn-default">Buscar</button>
+								</span>
+							</div>
+						</form>
+					</div>
+					<div class="col-md-2 col-md-offset-7">				
+						<a class="btn btn-primary btn-block" th:href="@{/clientes/adicionar}">
+							<i class="fa fa-plus" aria-hidden="true"></i> Adicionar
+						</a>
+					</div>
+				</div>
+				<div class="content" >
+					<table class="table" id="clients">
+						<thead>
+							<th class="col-md-1">CPF</th>
+							<th class="col-md-4">Nome</th>
+							<th class="col-md-2">Bairro</th>
+							<th class="col-md-2">Cidade</th>
+							<th class="col-md-1 text-center">UF</th>
+							<th class="col-md-2"></th>
+						</thead>
+						<tbody>
+							<tr th:each="client : ${clients}">
+								<td th:text="${client.cpf}" class="id"></td>
+								<td th:text="${client.name}" class="name"></td>
+								<td th:text="${client.address.borough}" class="borough"></td>
+								<td th:text="${client.address.city}" class="city"></td>
+								<td th:text="${client.address.state}" class="text-center state"></td>
+								<td class="text-center">
+									<a th:href="@{/clientes/} + ${client.id}"
+										class="btn btn-info btn-xs">
+										<i class="fa fa-eye" aria-hidden="true"></i>
+									</a>
+									<a sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ATTENDANT')"
+										th:href="@{/clientes/editar/} + ${client.id}" class="btn btn-warning btn-xs">
+										<i class="fa fa-pencil" aria-hidden="true"></i>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

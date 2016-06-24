@@ -1,0 +1,53 @@
+<html lang="pt-BR"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/default">
+	<head>
+		<title>Serviços</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="card">
+				<div class="header">
+					<div class="col-md-6">
+						<h4 class="title">Serviços</h4>
+					</div>
+					<div class="col-md-6 text-right">				
+						<a sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_ATTENDANT')"
+							class="btn btn-primary"  th:href="@{/servicos/adicionar}">
+							<i class="fa fa-plus" aria-hidden="true"></i> Adicionar
+						</a>
+					</div>
+				</div>
+				<div class="content">
+					<table class="table">
+						<thead>
+							<th class="col-md-1 text-right">ID</th>
+							<th class="col-md-3">Cliente</th>
+							<th class="col-md-3">Atendente</th>
+							<th class="col-md-2">Valor</th>
+							<th class="col-md-2">Data</th>
+							<th class="col-md-1"></th>
+						</thead>
+						<tbody>
+							<tr th:each="work : ${works}">
+								<td th:text="${work.id}" class="text-right"></td>
+								<td th:text="${work.client.name}"></td>
+								<td th:text="${work.attendant.name}"></td>
+								<td th:attr="data-money-format=${work.sumItems}" class="money-format"></td>
+								<td th:attr="data-date-format=${work.requestedAt}" class="date-format"></td>
+								<td class="text-center">
+									<a th:href="@{/servicos/} + ${work.id}"
+										class="btn btn-info btn-xs">
+										<i class="fa fa-eye" aria-hidden="true"></i>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

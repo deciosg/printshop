@@ -1,0 +1,53 @@
+<html lang="pt-BR"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/default">
+	<head>
+		<title>Usuario</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="card">
+				<div class="header">
+					<h2 th:text="${employee.name}"></h2>
+				</div>
+				<div class="content">
+					<table style="border-collapse:separate; border-spacing: 3px;">
+						<tr>
+							<td>CPF:</td>
+							<td th:text="${employee.cpf}"></td>
+						</tr>
+						<tr>
+							<td>CEP:</td>
+							<td th:text="${employee.address.postalCode}"></td>
+						</tr>
+						<tr>
+							<td>Logradouro:</td>
+							<td th:text="${employee.address.street}"></td>
+						</tr>
+						<tr>
+							<td>Numero:</td>
+							<td th:text="${employee.address.number}"></td>
+						</tr>
+						<tr>
+							<td>Complemento:&nbsp;</td>
+							<td th:text="${employee.address.complement}"></td>
+						</tr>
+						<tr>
+							<td>Bairro:</td>
+							<td th:text="${employee.address.borough}"></td>
+						</tr>
+						<tr>
+							<td>Cidade:</td>
+							<td th:text="${employee.address.city}"></td>
+						</tr>
+						<tr>
+							<td>Estado (UF):</td>
+							<td th:text="${employee.address.state}"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

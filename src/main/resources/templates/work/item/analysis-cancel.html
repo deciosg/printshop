@@ -1,0 +1,12 @@
+<div>
+	<div th:if="${item.status == T(cc.printshop.model.StatusItem).REQUESTED or item.status == T(cc.printshop.model.StatusItem).REJECTED}">
+		<button th:attr="data-work-id=${work.id}, data-item-id=${item.id}"
+			class="btn btn-primary pull-right btn-block item-analysis">
+			<i class="fa fa-check" aria-hidden="true"></i> Arquivo OK
+		</button> 
+		<button th:attr="data-work-id=${work.id}, data-item-id=${item.id}"
+			class="btn btn-danger pull-right btn-block item-cancel">
+			<i class="fa fa-ban" aria-hidden="true"></i> Cancelar
+		</button>
+	</div>
+</div>
