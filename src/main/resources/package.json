@@ -1,0 +1,25 @@
+{
+  "name": "print-shop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "accounting": "^0.4.1",
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.6.3",
+    "gulp": "^3.9.1",
+    "jquery": "^2.2.4",
+    "jquery-mask-plugin": "^1.14.0",
+    "jquery-validation": "^1.15.0",
+    "laravel-elixir": "6.0.0-2",
+    "moment": "^2.13.0",
+    "sweetalert2": "^4.0.0",
+    "underscore": "^1.8.3",
+    "vue": "^1.0.25"
+  }
+}
